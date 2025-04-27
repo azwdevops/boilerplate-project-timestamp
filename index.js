@@ -23,17 +23,22 @@ app.get("/api/hello", function (req, res) {
   res.json({ greeting: "hello API" });
 });
 
-app.get("/api/:date", async (req, res) => {
+app.get("/api/:date?", async (req, res) => {
   const { date } = req.params;
   let parsedDate;
 
   if (!date) {
+    // If no date provided, use current time
     parsedDate = new Date();
-  } else if (!isNaN(date)) {
+  } else if (!isNaN(Number(date))) {
+    // If it's a number, treat it as UNIX milliseconds
     parsedDate = new Date(Number(date));
   } else {
+    // Otherwise, try parsing as date string
     parsedDate = new Date(date);
   }
+
+  // Check if parsedDate is a valid date
 
   if (parsedDate instanceof Date && isNaN(parsedDate.getTime())) {
     return res.json({ error: "Invalid Date" });
